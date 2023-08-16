@@ -24,7 +24,6 @@ public class PostController {
 
     @PostMapping(value = PostEndPointUtils.ADD_NEW_POSTS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDto> createPost(
-            @Valid
             @RequestBody PostDto postDto,
             @PathVariable Integer userId,
             @PathVariable Integer categoryId

@@ -3,14 +3,15 @@ import dev.faiaz.blog.entities.Category;
 import dev.faiaz.blog.entities.Post;
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.exceptions.ResourceNotFoundException;
-import dev.faiaz.blog.payloads.CategoryDto;
 import dev.faiaz.blog.payloads.PostDto;
 import dev.faiaz.blog.payloads.PostResponse;
 import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.repositories.PostRepository;
 import dev.faiaz.blog.services.CategoryService;
+import dev.faiaz.blog.repositories.CategoryRepository;
+import dev.faiaz.blog.repositories.PostRepository;
+import dev.faiaz.blog.repositories.UserRepository;
 import dev.faiaz.blog.services.PostService;
-import dev.faiaz.blog.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -29,13 +30,18 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
-    private final UserService userService;
-    private final CategoryService categoryService;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
-        User user = getUser(userId);
-        Category category = getCategory(categoryId);
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFoundException("User", "User Id", userId)
+        );
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                ()-> new ResourceNotFoundException("Category", "Category Id", categoryId)
+        );
 
         Post post = modelMapper.map(postDto, Post.class);
         post.setImageName("default.png");
@@ -44,16 +50,6 @@ public class PostServiceImpl implements PostService {
         post.setCategory(category);
         Post createPost = postRepository.save(post);
         return modelMapper.map(createPost, PostDto.class);
-    }
-    //Getting user to create post
-    private User getUser(Integer userId){
-        UserDto userDto = userService.getUserById(userId);
-        return modelMapper.map(userDto, User.class);
-    }
-    //Getting category for creating post
-    private Category getCategory(Integer categoryId){
-       CategoryDto categoryDto = categoryService.getCategory(categoryId);
-       return modelMapper.map(categoryDto,Category.class);
     }
 
     @Override
