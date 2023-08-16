@@ -1,5 +1,7 @@
 package dev.faiaz.blog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,7 @@ public class Category {
 
     @Column(name = "title", length = 100, nullable = false)
     private String categoryTitle;
+
 
     @Column(name = "description")
     private  String categoryDescription;

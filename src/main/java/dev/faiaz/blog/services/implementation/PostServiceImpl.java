@@ -4,13 +4,22 @@ import dev.faiaz.blog.entities.Post;
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.exceptions.ResourceNotFoundException;
 import dev.faiaz.blog.payloads.PostDto;
+import dev.faiaz.blog.payloads.PostResponse;
+import dev.faiaz.blog.payloads.UserDto;
+import dev.faiaz.blog.repositories.PostRepository;
+import dev.faiaz.blog.services.CategoryService;
 import dev.faiaz.blog.repositories.CategoryRepository;
 import dev.faiaz.blog.repositories.PostRepository;
 import dev.faiaz.blog.repositories.UserRepository;
 import dev.faiaz.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,22 +54,49 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto updatePost(PostDto postDto, Integer postId) {
-        return null;
+        Post post = postRepository.findById(postId).orElseThrow(
+                ()-> new ResourceNotFoundException("Post", "PostId", postId)
+        );
+        BeanUtils.copyProperties(postDto, post, "id");
+        Post updatePost = postRepository.save(post);
+        return modelMapper.map(updatePost, PostDto.class);
     }
 
     @Override
     public void deletePost(Integer postId) {
-
+        Post post = postRepository.findById(postId).orElseThrow(
+                ()-> new ResourceNotFoundException("Post", "PostId", postId)
+        );
+        postRepository.delete(post);
     }
 
     @Override
-    public List<PostDto> getAllPost() {
-        return null;
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Post> pagePost = postRepository.findAll(pageable);
+        List<Post> posts = pagePost.getContent();
+        List<PostDto> postDtos = posts.stream().map((p) -> modelMapper.map(p,PostDto.class)).collect(Collectors.toList());
+
+        //Setting Page Information to PostResponse to get Information about page.
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pageable.getPageNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElement(pagePost.getTotalElements());
+
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+
+        return postResponse;
     }
 
     @Override
     public PostDto getPostById(Integer postId) {
-        return null;
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new ResourceNotFoundException("Post", "PostId", postId)
+        );
+        return modelMapper.map(post, PostDto.class);
     }
 
     @Override

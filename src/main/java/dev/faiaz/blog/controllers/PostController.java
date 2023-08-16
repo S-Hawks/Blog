@@ -1,11 +1,16 @@
 package dev.faiaz.blog.controllers;
 
+import dev.faiaz.blog.payloads.ApiResponse;
 import dev.faiaz.blog.payloads.PostDto;
+import dev.faiaz.blog.payloads.PostResponse;
 import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.services.PostService;
 import dev.faiaz.blog.utils.PostEndPointUtils;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +22,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping(value = PostEndPointUtils.ADD_NEW_POSTS, produces = "application/json")
+    @PostMapping(value = PostEndPointUtils.ADD_NEW_POSTS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDto> createPost(
             @RequestBody PostDto postDto,
             @PathVariable Integer userId,
@@ -37,4 +42,29 @@ public class PostController {
         List<PostDto> getByUser = postService.getPostByUser(userId);
         return new ResponseEntity<>(getByUser,HttpStatus.FOUND);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable Integer id){
+        return new ResponseEntity<>(postService.getPostById(id), HttpStatus.FOUND);
+    }
+
+    @GetMapping
+    public ResponseEntity<PostResponse> getAllPosts(
+            @RequestParam(value = "pageNumber", defaultValue = "1", required = false ) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+            ){
+        return new ResponseEntity<>(postService.getAllPost(pageNumber, pageSize),HttpStatus.FOUND);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable Integer id){
+        return new ResponseEntity<>(postService.updatePost(postDto, id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer id){
+        postService.deletePost(id);
+        return ResponseEntity.ok(new ApiResponse("Post Deleted Successfully", true));
+    }
+
 }

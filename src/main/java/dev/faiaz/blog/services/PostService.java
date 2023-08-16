@@ -3,6 +3,7 @@ package dev.faiaz.blog.services;
 
 
 import dev.faiaz.blog.payloads.PostDto;
+import dev.faiaz.blog.payloads.PostResponse;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    List<PostDto> getAllPost();
+    PostResponse getAllPost(Integer pageNumber, Integer pageSize);
 
     PostDto getPostById(Integer postId);
 
