@@ -4,6 +4,7 @@ import dev.faiaz.blog.payloads.PostDto;
 import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.services.PostService;
 import dev.faiaz.blog.utils.PostEndPointUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class PostController {
 
     @PostMapping(value = PostEndPointUtils.ADD_NEW_POSTS, produces = "application/json")
     public ResponseEntity<PostDto> createPost(
+            @Valid
             @RequestBody PostDto postDto,
             @PathVariable Integer userId,
             @PathVariable Integer categoryId
