@@ -6,6 +6,7 @@ import dev.faiaz.blog.exceptions.ResourceNotFoundException;
 import dev.faiaz.blog.payloads.CategoryDto;
 import dev.faiaz.blog.repositories.CategoryRepository;
 import dev.faiaz.blog.services.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     @Override
+    @Transactional
     public CategoryDto createCategory(CategoryDto categoryDto) {
         Category category = modelMapper.map(categoryDto, Category.class);
         categoryRepository.save(category);
@@ -27,6 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto updateCategory(CategoryDto categoryDto, Integer categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "Id", categoryId)

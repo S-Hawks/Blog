@@ -3,10 +3,8 @@ package dev.faiaz.blog.controllers;
 import dev.faiaz.blog.payloads.ApiResponse;
 import dev.faiaz.blog.payloads.PostDto;
 import dev.faiaz.blog.payloads.PostResponse;
-import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.services.PostService;
 import dev.faiaz.blog.utils.PostEndPointUtils;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,9 +49,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PostResponse> getAllPosts(
             @RequestParam(value = "pageNumber", defaultValue = "1", required = false ) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
             ){
-        return new ResponseEntity<>(postService.getAllPost(pageNumber, pageSize),HttpStatus.FOUND);
+        return new ResponseEntity<>(postService.getAllPost(pageNumber, pageSize, sortBy, sortDir),HttpStatus.FOUND);
     }
 
     @PutMapping("/{id}")
@@ -65,6 +65,11 @@ public class PostController {
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer id){
         postService.deletePost(id);
         return ResponseEntity.ok(new ApiResponse("Post Deleted Successfully", true));
+    }
+
+    @GetMapping("/search/{keywords}")
+    public ResponseEntity<List<PostDto>> searchByKeyword(@PathVariable String keywords){
+        return new ResponseEntity<>(postService.searchPost(keywords), HttpStatus.OK);
     }
 
 }

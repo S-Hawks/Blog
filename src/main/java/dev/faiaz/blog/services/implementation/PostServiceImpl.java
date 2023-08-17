@@ -12,12 +12,15 @@ import dev.faiaz.blog.repositories.CategoryRepository;
 import dev.faiaz.blog.repositories.PostRepository;
 import dev.faiaz.blog.repositories.UserRepository;
 import dev.faiaz.blog.services.PostService;
+import dev.faiaz.blog.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,6 +37,7 @@ public class PostServiceImpl implements PostService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new ResourceNotFoundException("User", "User Id", userId)
@@ -53,6 +57,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto updatePost(PostDto postDto, Integer postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new ResourceNotFoundException("Post", "PostId", postId)
@@ -71,14 +76,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        //Implement Sorting
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        //Implement Page to fetch certain about of data
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> pagePost = postRepository.findAll(pageable);
         List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((p) -> modelMapper.map(p,PostDto.class)).collect(Collectors.toList());
 
         //Setting Page Information to PostResponse to get Information about page.
-
         PostResponse postResponse = new PostResponse();
         postResponse.setContent(postDtos);
         postResponse.setPageNumber(pageable.getPageNumber());
@@ -114,8 +122,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> searchPost(String keyWord) {
-        return null;
+    public List<PostDto> searchPost(String keyword) {
+        List<Post> posts = postRepository.searchByKeyword(keyword);
+        List<PostDto> postDtos = posts.stream().map((p) -> modelMapper.map(p, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 
 }
