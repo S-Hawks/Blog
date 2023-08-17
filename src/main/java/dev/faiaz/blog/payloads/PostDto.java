@@ -12,8 +12,12 @@ import java.util.Date;
 @Data
 @JsonIgnoreProperties({"category", "user"})
 public class PostDto {
+    private String id;
+
+    @NotNull(message = "Title must not be null")
     private String title;
 
+    @Size(min=10, max=100, message = "Content must be between {min} and {max} character")
     private String content;
 
     private String imageName;

@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -22,6 +24,7 @@ public class PostController {
 
     @PostMapping(value = PostEndPointUtils.ADD_NEW_POSTS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDto> createPost(
+            @Valid
             @RequestBody PostDto postDto,
             @PathVariable Integer userId,
             @PathVariable Integer categoryId
