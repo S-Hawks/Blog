@@ -3,7 +3,7 @@ package dev.faiaz.blog.services;
 
 
 import dev.faiaz.blog.payloads.PostDto;
-import dev.faiaz.blog.payloads.PostResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    Page<PostDto> getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     PostDto getPostById(Integer postId);
 
