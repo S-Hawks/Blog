@@ -33,19 +33,15 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     @Override
     @Transactional
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                ()-> new ResourceNotFoundException("User", "User Id", userId)
-        );
+        User user = getUser(userId);
 
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                ()-> new ResourceNotFoundException("Category", "Category Id", categoryId)
-        );
+        Category category = getCategory(categoryId);
 
         Post post = modelMapper.map(postDto, Post.class);
         post.setImageName("default.png");
@@ -54,6 +50,12 @@ public class PostServiceImpl implements PostService {
         post.setCategory(category);
         Post createPost = postRepository.save(post);
         return modelMapper.map(createPost, PostDto.class);
+    }
+    private User getUser(Integer userId){
+        return modelMapper.map(userService.getUserById(userId), User.class);
+    }
+    private Category getCategory(Integer categoryId){
+        return modelMapper.map(categoryService.getCategory(categoryId), Category.class);
     }
 
     @Override
