@@ -4,13 +4,8 @@ import dev.faiaz.blog.entities.Post;
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.exceptions.ResourceNotFoundException;
 import dev.faiaz.blog.payloads.PostDto;
-import dev.faiaz.blog.payloads.PostResponse;
-import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.repositories.PostRepository;
 import dev.faiaz.blog.services.CategoryService;
-import dev.faiaz.blog.repositories.CategoryRepository;
-import dev.faiaz.blog.repositories.PostRepository;
-import dev.faiaz.blog.repositories.UserRepository;
 import dev.faiaz.blog.services.PostService;
 import dev.faiaz.blog.services.UserService;
 import jakarta.transaction.Transactional;
@@ -39,9 +34,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
-        User user = getUser(userId);
 
-        Category category = getCategory(categoryId);
+        User user = modelMapper.map(userService.getUserById(userId), User.class);
+
+        Category category = modelMapper.map(categoryService.getCategory(categoryId), Category.class);
 
         Post post = modelMapper.map(postDto, Post.class);
         post.setImageName("default.png");
@@ -51,13 +47,6 @@ public class PostServiceImpl implements PostService {
         Post createPost = postRepository.save(post);
         return modelMapper.map(createPost, PostDto.class);
     }
-    private User getUser(Integer userId){
-        return modelMapper.map(userService.getUserById(userId), User.class);
-    }
-    private Category getCategory(Integer categoryId){
-        return modelMapper.map(categoryService.getCategory(categoryId), Category.class);
-    }
-
     @Override
     @Transactional
     public PostDto updatePost(PostDto postDto, Integer postId) {
@@ -78,27 +67,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+    public Page<PostDto> getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         //Implement Sorting
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        //Implement Page to fetch certain about of data
+        //Implement Page to fetch certain amount of data
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Post> pagePost = postRepository.findAll(pageable);
-        List<Post> posts = pagePost.getContent();
-        List<PostDto> postDtos = posts.stream().map((p) -> modelMapper.map(p,PostDto.class)).collect(Collectors.toList());
-
-        //Setting Page Information to PostResponse to get Information about page.
-        PostResponse postResponse = new PostResponse();
-        postResponse.setContent(postDtos);
-        postResponse.setPageNumber(pageable.getPageNumber());
-        postResponse.setPageSize(pagePost.getSize());
-        postResponse.setTotalElement(pagePost.getTotalElements());
-
-        postResponse.setTotalPages(pagePost.getTotalPages());
-        postResponse.setLastPage(pagePost.isLast());
-
-        return postResponse;
+        return postRepository.findAll(pageable)
+                .map(post -> modelMapper.map(post, PostDto.class));
     }
 
     @Override
