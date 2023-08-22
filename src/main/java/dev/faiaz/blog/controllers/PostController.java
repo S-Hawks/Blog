@@ -90,8 +90,8 @@ public class PostController {
     public ResponseEntity<PostDto> uploadImage(@RequestParam("image")
                                                     MultipartFile image,
                                                     @PathVariable Integer postId,
-                                               @RequestParam Integer cropWidth,
-                                               @RequestParam Integer cropHeight
+                                               @RequestParam(value = "cropWidth", defaultValue = "200", required = false) Integer cropWidth,
+                                               @RequestParam(value = "cropHeight", defaultValue = "200", required = false) Integer cropHeight
                                                ) throws IOException
     {
         String fileName = fileService.uploadImage(path, image, cropWidth, cropHeight);

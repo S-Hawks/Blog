@@ -9,6 +9,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,10 +56,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = users.stream().map(user -> userToDto(user)).collect(Collectors.toList());
-        return userDtos;
+    public Page<UserDto> getAllUser(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+//        Page<User> users = userRepository.findAll(pageable);
+//        List<UserDto> userDtos = users.stream().map(user -> userToDto(user)).collect(Collectors.toList());
+        return userRepository.findAll(pageable).map(user -> modelMapper.map(user, UserDto.class));
     }
 
     @Override

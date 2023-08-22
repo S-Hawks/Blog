@@ -5,6 +5,7 @@ import dev.faiaz.blog.payloads.CategoryDto;
 import dev.faiaz.blog.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,8 +37,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> getAllCategory(){
-        List<CategoryDto> getAllCategory = categoryService.getAllCategory();
+    public ResponseEntity<Page<CategoryDto>> getAllCategory(
+            @RequestParam(value = "pageNUmber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ){
+        Page<CategoryDto> getAllCategory = categoryService.getAllCategory(pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllCategory, HttpStatus.FOUND);
     }
     @GetMapping("/{categoryId}")
