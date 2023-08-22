@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/blog
@@ -13,5 +15,11 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql: true
-server:
-  port: 8081
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
+project.image : images/
+
+
