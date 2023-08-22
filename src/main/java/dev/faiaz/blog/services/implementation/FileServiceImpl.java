@@ -22,7 +22,7 @@ import java.util.UUID;
 @Service
 public class FileServiceImpl implements FileService {
     @Override
-    public String uploadImage(String path, MultipartFile file) throws IOException {
+    public String uploadImage(String path, MultipartFile file, Integer cropWidth, Integer cropHeight) throws IOException {
         //File name
         String name = file.getOriginalFilename();
         //abc.png
@@ -42,8 +42,7 @@ public class FileServiceImpl implements FileService {
 //        cropping and compressing image
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         BufferedImage originalImage = ImageIO.read(file.getInputStream());
-        int cropWidth = 200;
-        int cropHeight = 200;
+
         float compressionQuality = 0.1f;
         //TODO: This process will compress in default size base on width and height
 //        BufferedImage croppedAndCompressImage =Thumbnails.of(originalImage)

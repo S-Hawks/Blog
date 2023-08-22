@@ -89,9 +89,12 @@ public class PostController {
     @PostMapping(value = PostEndPointUtils.IMAGE_UPLOAD)
     public ResponseEntity<PostDto> uploadImage(@RequestParam("image")
                                                     MultipartFile image,
-                                                    @PathVariable Integer postId) throws IOException
+                                                    @PathVariable Integer postId,
+                                               @RequestParam Integer cropWidth,
+                                               @RequestParam Integer cropHeight
+                                               ) throws IOException
     {
-        String fileName = fileService.uploadImage(path, image);
+        String fileName = fileService.uploadImage(path, image, cropWidth, cropHeight);
 
         PostDto postDto = postService.getPostById(postId);
         postDto.setImageName(fileName);
