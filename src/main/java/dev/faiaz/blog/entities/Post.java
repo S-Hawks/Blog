@@ -1,9 +1,11 @@
 package dev.faiaz.blog.entities;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -27,9 +29,12 @@ public class Post {
 
     private Date date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
 }
