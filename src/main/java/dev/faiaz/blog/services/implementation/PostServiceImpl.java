@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -32,7 +33,6 @@ public class PostServiceImpl implements PostService {
     private final CategoryService categoryService;
 
     @Override
-    @Transactional
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
 
         User user = modelMapper.map(userService.getUserById(userId), User.class);
@@ -48,7 +48,6 @@ public class PostServiceImpl implements PostService {
         return modelMapper.map(createPost, PostDto.class);
     }
     @Override
-    @Transactional
     public PostDto updatePost(PostDto postDto, Integer postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new ResourceNotFoundException("Post", "PostId", postId)
@@ -73,7 +72,7 @@ public class PostServiceImpl implements PostService {
 
         //Implement Page to fetch certain amount of data
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        return postRepository.findAll(pageable)
+       return postRepository.findAll(pageable)
                 .map(post -> modelMapper.map(post, PostDto.class));
     }
 

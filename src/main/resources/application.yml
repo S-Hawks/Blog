@@ -20,6 +20,11 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
       enabled: true
-project.image : images/
-
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+project:
+  image : images/
 
