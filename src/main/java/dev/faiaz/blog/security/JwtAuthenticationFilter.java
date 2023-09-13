@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtTokenHelper jwtTokenHelper;
+    private final JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(requestToken != null && requestToken.startsWith("Bearer")){
              token = requestToken.substring(7);
             try{
-                username = jwtTokenHelper.getUsernameFromToken(token);
+                username = jwtUtils.getUsernameFromToken(token);
             }
             catch (IllegalArgumentException e){
                 System.out.println("Unable to get Jwt token");
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        once we get the token , now validate
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if(jwtTokenHelper.validateToken(token, userDetails)){
+            if(jwtUtils.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
