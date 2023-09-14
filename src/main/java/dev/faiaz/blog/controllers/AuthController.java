@@ -1,7 +1,7 @@
 package dev.faiaz.blog.controllers;
 
-import dev.faiaz.blog.payloads.JwtAuthRequest;
-import dev.faiaz.blog.payloads.JwtAuthResponse;
+import dev.faiaz.blog.security.JwtAuthRequest;
+import dev.faiaz.blog.security.JwtAuthResponse;
 import dev.faiaz.blog.security.UserDetailServiceImpl;
 import dev.faiaz.blog.security.JwtUtils;
 import lombok.RequiredArgsConstructor;

@@ -20,7 +20,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         //TODO: Treating user email as user name.
         User user = userRepository.findByEmail(username).orElseThrow(
                 () -> new ResourceNotFoundException("User", "email: " + username, 0)
+                //User not found exception create it.
         );
-        return null;
+
+        UserDetailImpl userDetail = new UserDetailImpl(user);
+        return userDetail;
     }
 }

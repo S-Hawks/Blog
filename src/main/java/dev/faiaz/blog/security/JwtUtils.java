@@ -3,6 +3,7 @@ package dev.faiaz.blog.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
@@ -13,7 +14,11 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
     private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-    private String secret = "jwtTokenKey";
+
+//    private String secret = "jwtTokenKey";
+
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
 
 //    retrieve username from jwt token
     public String getUsernameFromToken(String token){
@@ -24,16 +29,15 @@ public class JwtUtils {
         return getClaimFromToken(token,Claims::getExpiration);
     }
 
-//    check if the token has expired
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver){
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 //    for retrieving any information from token will need secret key
     private Claims getAllClaimsFromToken(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
     }
-//    check if token hax expired
+//    check if token has expired
     private Boolean isTokenExpired(String token){
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
@@ -52,7 +56,7 @@ public class JwtUtils {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 100))
-                .signWith(SignatureAlgorithm.ES512, secret).compact();
+                .signWith(SignatureAlgorithm.ES512, jwtSecret).compact();
     }
 
 //    validate token

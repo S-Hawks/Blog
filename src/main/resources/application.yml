@@ -27,4 +27,5 @@ logging:
         security: DEBUG
 project:
   image : images/
+app.jwtSecret: ======JwtSecretKey======
 
