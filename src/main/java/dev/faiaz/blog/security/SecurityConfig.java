@@ -1,8 +1,4 @@
 package dev.faiaz.blog.security;
-
-import dev.faiaz.blog.security.UserDetailServiceImpl;
-import dev.faiaz.blog.security.JwtAuthenticationEntryPoint;
-import dev.faiaz.blog.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
            return http
                     .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+                    .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated().requestMatchers("/api/v1/auth/login").permitAll())
                     .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

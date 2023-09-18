@@ -5,8 +5,11 @@ import dev.faiaz.blog.security.JwtAuthResponse;
 import dev.faiaz.blog.security.UserDetailServiceImpl;
 import dev.faiaz.blog.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,16 @@ public class AuthController {
     public ResponseEntity<JwtAuthResponse> createToken(
             @RequestBody JwtAuthRequest request
             ){
-        return null;
+        authenticate(request.getUsername(), request.getPassword());
+        UserDetails userDetails = userDetailService.loadUserByUsername(request.getUsername());
+        String token = jwtUtils.generateToken(userDetails);
+        JwtAuthResponse response = new JwtAuthResponse();
+        response.setToken(token);
+
+        return new ResponseEntity<JwtAuthResponse>(response,HttpStatus.OK);
+    }
+    private void authenticate(String username, String password){
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        authenticationManager.authenticate(authenticationToken);
     }
 }
