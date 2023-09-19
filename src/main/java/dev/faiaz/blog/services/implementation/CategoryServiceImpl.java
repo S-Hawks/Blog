@@ -1,6 +1,5 @@
 package dev.faiaz.blog.services.implementation;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import dev.faiaz.blog.entities.Category;
 import dev.faiaz.blog.exceptions.ResourceNotFoundException;
 import dev.faiaz.blog.payloads.CategoryDto;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
