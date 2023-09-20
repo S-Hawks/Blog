@@ -19,8 +19,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         //loading user from database by username
         //TODO: Treating user email as user name.
         User user = userRepository.findByEmail(username).orElseThrow(
-                () -> new ResourceNotFoundException("User", "email: " + username, 0)
-                //User not found exception create it.
+                () -> new UsernameNotFoundException("User not found")
         );
 
         UserDetailImpl userDetail = new UserDetailImpl(user);

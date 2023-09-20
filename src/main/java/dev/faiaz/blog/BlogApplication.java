@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-public class BlogApplication implements CommandLineRunner {
+public class BlogApplication {
 
 	private final PasswordEncoder passwordEncoder;
 
@@ -23,9 +23,4 @@ public class BlogApplication implements CommandLineRunner {
 		return new ModelMapper();
 	}
 
-
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println(passwordEncoder.encode("zyz"));
-	}
 }

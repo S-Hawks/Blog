@@ -1,15 +1,11 @@
 package dev.faiaz.blog.controllers;
 
-import dev.faiaz.blog.security.JwtAuthRequest;
-import dev.faiaz.blog.security.JwtAuthResponse;
-import dev.faiaz.blog.security.UserDetailServiceImpl;
-import dev.faiaz.blog.security.JwtUtils;
+import dev.faiaz.blog.security.payload.AuthenticationRequest;
+import dev.faiaz.blog.security.payload.AuthenticationResponse;
+import dev.faiaz.blog.security.payload.RegisterRequest;
+import dev.faiaz.blog.services.implementation.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,24 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/auth/")
 @RequiredArgsConstructor
 public class AuthController {
-    private final JwtUtils jwtUtils;
-    private final UserDetailServiceImpl userDetailService;
-    private final AuthenticationManager authenticationManager;
-
-    @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> createToken(
-            @RequestBody JwtAuthRequest request
-            ){
-        authenticate(request.getUsername(), request.getPassword());
-        UserDetails userDetails = userDetailService.loadUserByUsername(request.getUsername());
-        String token = jwtUtils.generateToken(userDetails);
-        JwtAuthResponse response = new JwtAuthResponse();
-        response.setToken(token);
-
-        return new ResponseEntity<JwtAuthResponse>(response,HttpStatus.OK);
+    private final AuthenticationService service;
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request)
+    {
+        return ResponseEntity.ok(service.register(request));
     }
-    private void authenticate(String username, String password){
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        authenticationManager.authenticate(authenticationToken);
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest request)
+    {
+        return ResponseEntity.ok(service.authenticate(request));
     }
 }

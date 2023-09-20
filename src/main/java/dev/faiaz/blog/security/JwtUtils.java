@@ -1,7 +1,6 @@
 package dev.faiaz.blog.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -23,12 +22,12 @@ public class JwtUtils {
     private String jwtSecret;
  
     //2 implementation for generating token
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetailImpl userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
 
     //1 implementation for generating token
-    public String generateToken(Map<String, Object> extraClaim, UserDetails userDetails){
+    public String generateToken(Map<String, Object> extraClaim, UserDetailImpl userDetails){
         return Jwts
                 .builder()
                 .setClaims(extraClaim)
@@ -44,12 +43,12 @@ public class JwtUtils {
         return extractClaim(jwt, Claims::getSubject);
     }
 
-    //3 implementation
+    //3 implementation parse jwt token
     public <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver){
         final Claims claims = extractAllClaims(jwt);
         return claimsResolver.apply(claims);
     }
-    //1 implementation
+    //1 implementation parse jwt token
     private Claims extractAllClaims(String jwt){
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -57,7 +56,7 @@ public class JwtUtils {
                 .parseClaimsJws(jwt)
                 .getBody();
     }
-    //2 implementation
+    //2 implementation parse jwt token
     private Key getSignInKey(){
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);

@@ -32,10 +32,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = { @JoinColumn(name = "users", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "id") })
+//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "user_role",
+//            joinColumns = { @JoinColumn(name = "users", referencedColumnName = "id") },
+//            inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "id") })
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
 

@@ -1,8 +1,9 @@
 package dev.faiaz.blog.security;
-import lombok.RequiredArgsConstructor;
+import  lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,18 +17,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfiguration {
     private final UserDetailServiceImpl userDetailServiceImpl;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+//    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
            return http
                     .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated().requestMatchers("/api/v1/auth/login").permitAll())
+                    .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated())
                     .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authenticationProvider(authenticationProvider())
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                     .build();
     }
@@ -37,7 +41,7 @@ public class SecurityConfig {
 //    }
 //    TODO:Now in use
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailServiceImpl);
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -52,4 +56,14 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
+    //TODO: Alternative way for implementing UserDetailsService
+    //TODO: IN this process we can avoid creating UserDetailsService implementation. Just declare it in this manner in configuration class of spring security
+    //TODO: THINGS TO REMEMBER -> This thing need to configure in separate application config class
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        return username -> (UserDetails) userRepository.findByEmail(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+//    }
+
 }
