@@ -13,9 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final UserDetailServiceImpl userDetailServiceImpl;
@@ -23,12 +25,16 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 //    private final UserRepository userRepository;
+    public static final String[] PUBLIC_URLS = {
+            "/api/v1/auth/**",
+            "/v3/api-docs"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
            return http
                     .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated())
+                    .authorizeHttpRequests(authorize -> authorize.requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated())
                     .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authenticationProvider(authenticationProvider())
