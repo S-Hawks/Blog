@@ -20,12 +20,30 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
       enabled: true
+#Properties for sending email
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: s.hawks685@gmail.com
+    password: jfgwfnzqnluggojf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl.enable: true
+    from-email: s.hawks685@gmail.com
 logging:
   level:
     org:
       springframework:
         security: DEBUG
+        mail:
+          javamail: DEBUG
 project:
   image : images/
 app.jwtSecret: ==============================JwtSecretKey==============================
-
+from-email: s.hawks685@gmail.com
+  
+#  jfgwfnzqnluggojf
