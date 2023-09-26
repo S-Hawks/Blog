@@ -41,6 +41,11 @@ public enum Role {
     @Getter
     private final Set<Permission> permissions;
 
+    //TODO:Using java vararg method of java..
+//    private static Set<Permission> createPermission(Permission... permissions){
+//        return Set.of(permissions);
+//    }
+
     public List<SimpleGrantedAuthority> getAuthorities(){
         List<SimpleGrantedAuthority> authorities =  getPermissions().stream().map(
                 permission -> new SimpleGrantedAuthority(permission.name())).toList();

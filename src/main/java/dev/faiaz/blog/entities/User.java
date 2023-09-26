@@ -31,13 +31,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
+    //TODO:This process is alternative if I am not using @ElementCollection annotation-> @ElementCollection act as ManyToMany
 //    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JoinTable(name = "user_role",
 //            joinColumns = { @JoinColumn(name = "users", referencedColumnName = "id") },
 //            inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "id") })
+    //TODO:Not initialize this method because I have set of permission in my Role enum. If role enum only contain enum then this code is applicable
+//    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+//    private Set<Role> roles = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
 
 }
