@@ -1,10 +1,7 @@
 package dev.faiaz.blog.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
@@ -31,7 +28,7 @@ public enum Role {
     MODERATOR(
             Set.of(
                     MODERATOR_CREATE,
-                    MODERATOR_CREATE,
+                    MODERATOR_READ,
                     MODERATOR_UPDATE,
                     MODERATOR_DELETE
             )
