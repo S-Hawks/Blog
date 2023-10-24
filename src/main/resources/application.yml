@@ -13,7 +13,7 @@ spring:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       show-sql: true
   servlet:
     multipart:
@@ -25,7 +25,7 @@ spring:
     host: smtp.gmail.com
     port: 465
     username: s.hawks685@gmail.com
-    password: jfgwfnzqnluggojf
+    password: yoxsprhblaxhxjem
     properties:
       mail:
         smtp:

@@ -1,6 +1,5 @@
 package dev.faiaz.blog.services.implementation;
 
-import dev.faiaz.blog.entities.Role;
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.notification.EmailService;
 import dev.faiaz.blog.repositories.UserRepository;
@@ -14,8 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,15 +28,15 @@ public class AuthenticationService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAbout(request.getAbout());
-        user.setRoles(Set.of(Role.USER));
+        user.setRole(request.getRole());
         userRepository.save(user);
         var userDetail = new UserDetailImpl(user);
         var jwtToken = jwtUtils.generateToken(userDetail);
         //TODO: Sending mail after successful registration
-        String to = request.getEmail();
+/*        String to = request.getEmail();
         String subject = "Registration Conformation";
         String text = "Thank you for registering " + user.getName() + "!";
-        emailService.sendEmail(to,subject,text);
+        emailService.sendEmail(to,subject,text)*/;
 
         return AuthenticationResponse
                 .builder()

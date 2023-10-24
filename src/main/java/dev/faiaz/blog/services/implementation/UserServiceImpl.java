@@ -2,21 +2,19 @@ package dev.faiaz.blog.services.implementation;
 
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.exceptions.ResourceNotFoundException;
+import dev.faiaz.blog.exceptions.UnauthorizedException;
 import dev.faiaz.blog.payloads.UserDto;
 import dev.faiaz.blog.repositories.UserRepository;
 import dev.faiaz.blog.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +34,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto updateUser(UserDto userDto, Integer UserId) {
+        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!currentUserId.equals(String.valueOf(UserId))){
+            throw new UnauthorizedException("Can not update other user id");
+        }
         User user = this.userRepository.findById(UserId).orElseThrow(
                 () -> new ResourceNotFoundException("User", "Id", UserId));
 
@@ -91,6 +93,5 @@ public class UserServiceImpl implements UserService {
 //        userDto.setPassword(user.getPassword());
 //        userDto.setAbout(user.getAbout());
         return userDto;
-
     }
 }

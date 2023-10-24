@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -31,5 +32,11 @@ public class GlobalExceptionHandler {
                     resp.put(fieldName, message);
                 });
         return new ResponseEntity<Map<String, String>>(resp, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorized(){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

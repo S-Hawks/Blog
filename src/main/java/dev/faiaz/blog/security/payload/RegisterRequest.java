@@ -1,5 +1,6 @@
 package dev.faiaz.blog.security.payload;
 
+import dev.faiaz.blog.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,6 @@ public class RegisterRequest {
     private String email;
     private String password;
     private String about;
+    private Role role;
+
 }

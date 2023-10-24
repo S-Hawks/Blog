@@ -1,7 +1,6 @@
 package dev.faiaz.blog.security;
 
 import dev.faiaz.blog.entities.User;
-import dev.faiaz.blog.exceptions.ResourceNotFoundException;
 import dev.faiaz.blog.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,8 +1,8 @@
 package dev.faiaz.blog.security;
-import  lombok.RequiredArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,9 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import static dev.faiaz.blog.entities.Permission.*;
 import static dev.faiaz.blog.entities.Role.*;
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -49,9 +49,16 @@ public class SecurityConfiguration {
            return http
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(authorize -> authorize.requestMatchers(PUBLIC_URLS).permitAll()
-                            .requestMatchers("/api/users/**").hasAnyRole(ADMIN.name(),MODERATOR.name(),USER.name())
-                            .requestMatchers(GET,"api/users/**").hasAnyAuthority(ADMIN.name(),MODERATOR.name())
-                            .requestMatchers(DELETE,"/api/users/**").hasAnyAuthority(ADMIN.name(),MODERATOR.name())
+
+                            .requestMatchers("/api/users/**").hasAnyRole(ADMIN.name(),MODERATOR.name(), USER.name())
+                            .requestMatchers(GET,"api/users/**").hasAnyAuthority(ADMIN_READ.name(),MODERATOR_READ.name())
+                            .requestMatchers(DELETE,"/api/users/**").hasAnyAuthority(ADMIN_DELETE.name(),MODERATOR_DELETE.name())
+                            .requestMatchers(PUT, "/api/users/**").hasAnyAuthority(ADMIN_UPDATE.name(), MODERATOR_UPDATE.name(),USER.name())
+                            .requestMatchers(POST, "/api/users/**").hasAnyAuthority(ADMIN.name(),MODERATOR.name(),USER.name())
+
+                            .requestMatchers(GET, "/api/posts/**").hasAnyAuthority(USER.name())
+                            .requestMatchers(PUT, "/api/posts/**").hasAnyAuthority(USER.name())
+
                             .anyRequest().authenticated())
                     .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
