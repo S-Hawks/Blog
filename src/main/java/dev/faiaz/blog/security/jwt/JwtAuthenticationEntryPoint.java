@@ -1,4 +1,4 @@
-package dev.faiaz.blog.security;
+package dev.faiaz.blog.security.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

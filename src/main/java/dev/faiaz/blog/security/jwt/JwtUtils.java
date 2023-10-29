@@ -1,5 +1,6 @@
-package dev.faiaz.blog.security;
+package dev.faiaz.blog.security.jwt;
 
+import dev.faiaz.blog.security.UserDetailImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

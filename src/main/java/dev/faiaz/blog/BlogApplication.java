@@ -1,7 +1,7 @@
 package dev.faiaz.blog;
 
-import dev.faiaz.blog.security.payload.RegisterRequest;
-import dev.faiaz.blog.services.implementation.AuthenticationService;
+import dev.faiaz.blog.auth.RegisterRequest;
+import dev.faiaz.blog.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;

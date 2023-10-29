@@ -1,9 +1,5 @@
-package dev.faiaz.blog.controllers;
+package dev.faiaz.blog.auth;
 
-import dev.faiaz.blog.security.payload.AuthenticationRequest;
-import dev.faiaz.blog.security.payload.AuthenticationResponse;
-import dev.faiaz.blog.security.payload.RegisterRequest;
-import dev.faiaz.blog.services.implementation.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

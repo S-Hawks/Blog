@@ -1,5 +1,7 @@
 package dev.faiaz.blog.security;
 
+import dev.faiaz.blog.security.jwt.JwtAuthenticationEntryPoint;
+import dev.faiaz.blog.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

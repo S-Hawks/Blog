@@ -1,13 +1,10 @@
-package dev.faiaz.blog.services.implementation;
+package dev.faiaz.blog.auth;
 
 import dev.faiaz.blog.entities.User;
 import dev.faiaz.blog.notification.EmailService;
 import dev.faiaz.blog.repositories.UserRepository;
-import dev.faiaz.blog.security.JwtUtils;
+import dev.faiaz.blog.security.jwt.JwtUtils;
 import dev.faiaz.blog.security.UserDetailImpl;
-import dev.faiaz.blog.security.payload.AuthenticationRequest;
-import dev.faiaz.blog.security.payload.AuthenticationResponse;
-import dev.faiaz.blog.security.payload.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

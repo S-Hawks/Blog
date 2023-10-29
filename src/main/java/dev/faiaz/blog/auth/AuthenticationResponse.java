@@ -1,4 +1,4 @@
-package dev.faiaz.blog.security.payload;
+package dev.faiaz.blog.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
